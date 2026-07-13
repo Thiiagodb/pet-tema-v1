@@ -11,18 +11,10 @@
       content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0, maximum-scale=5.0"
     >
     <meta name="theme-color" content="{{ settings.accent_color }}">
-    <link rel="preload" as="font" href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">
-    <script src="https://npmcdn.com/flickity@2/dist/flickity.pkgd.js"></script>
-    <script
-      src="https://code.jquery.com/jquery-3.6.0.min.js"
-      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://code.jquery.com/jquery-migrate-3.4.0.min.js"
-      integrity="sha256-mBCu5+bVfYzOqpYyK4jm30ZxAZRomuErKEFJFIyrwvM="
-      crossorigin="anonymous"
-    ></script>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://use.fontawesome.com">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" media="print" onload="this.media='all'">
+    <script src="https://npmcdn.com/flickity@2/dist/flickity.pkgd.js" defer></script>
 
     {%- capture seo_page_title -%}
       {%- if request.page_type == 'search' and search.terms != blank -%}
@@ -61,68 +53,9 @@
 
     {% render 'microdata-schema' %}
 
-    <!-- INICIO DO BLOQUEADOR -->
-
-    {% if settings.botao_direito_enable %}
-      <script type="text/javascript">
-        var message="Desculpe, o clique com o botão direito foi desativado.";
-        function clickIE() {if (document.all) {(message);return false;}}
-        function clickNS(e) {if
-        (document.layers||(document.getElementById&&!document.all)) {
-            if (e.which==2||e.which==3) {(message);return false;}}}
-        if (document.layers)
-        {document.captureEvents(Event.MOUSEDOWN);document.onmousedown=clickNS;}
-        else{document.onmouseup=clickNS;document.oncontextmenu=clickIE;}
-        document.oncontextmenu=new Function("return false")
-      </script>
-    {% endif %}
-
-    {% if settings.atalho_f12_enable %}
-      <script>
-        document.onkeydown = function(e) {
-            if(event.keyCode == 123) {
-                return false;
-            }
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
-                return false;
-            }
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
-                return false;
-            }
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
-                return false;
-            }
-        }
-      </script>
-
-      <script>
-        document.addEventListener("keydown", function(event) {
-          if (event.ctrlKey && event.shiftKey && event.code === "KeyI") {
-            alert("Tentativa de violação de direitos autoriais identificada e reportada! Suas ações a partir de agora estão sendo observadas neste site.");
-            event.preventDefault();
-          }
-        });
-      </script>
-    {% endif %}
-
-    {% if settings.selecionar_conteudo_enable %}
-      <script>
-        function disableselect(e) {
-            return false;
-        }
-
-        function reEnable() {
-            return true;
-        }
-
-        document.onselectstart = new Function("return false");
-
-        if (window.sidebar) {
-            document.onmousedown = disableselect;
-            document.onclick = reEnable;
-        }
-      </script>
-    {% endif %}
+    {%- if settings.botao_direito_enable or settings.atalho_f12_enable or settings.selecionar_conteudo_enable -%}
+    <script src="{{ 'blockers.js' | asset_url }}" defer></script>
+    {%- endif -%}
     <script>
       // This allows to expose several variables to the global scope, to be used in scripts
       window.theme = {
@@ -230,8 +163,5 @@
 
     {%- if settings.addzap -%}{% include 'addzap' %}{%- endif -%}
 
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-        {{ '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css' | stylesheet_tag }}
-  </body>
+      </body>
 </html>
